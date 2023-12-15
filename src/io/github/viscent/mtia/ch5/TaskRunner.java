@@ -15,6 +15,8 @@ package io.github.viscent.mtia.ch5;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import io.github.viscent.mtia.util.Debug;
+
 public class TaskRunner {
   protected final BlockingQueue<Runnable> channel;
   protected volatile Thread workerThread;
@@ -54,6 +56,7 @@ public class TaskRunner {
           }
         }// for循环结束
       } catch (InterruptedException e) {
+    	  Debug.info("exception in WorkerThread : " + e.getMessage());
         // 什么也不做
       }
     }// run方法结束

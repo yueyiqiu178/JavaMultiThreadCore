@@ -69,9 +69,11 @@ public class TerminatableTaskRunner implements TaskRunnerSpec {
       try {
         for (;;) {
           // 线程不再被需要，且无待处理任务
+          Debug.info("Before break");
           if (!inUse && reservations.get() <= 0) {// 语句③
             break;
           }
+          Debug.info("Before channel.take");
           task = channel.take();
           try {
             task.run();
@@ -83,8 +85,30 @@ public class TerminatableTaskRunner implements TaskRunnerSpec {
         }// for循环结束
       } catch (InterruptedException e) {
         workerThread = null;
+        Debug.info("exception in 1");
       }
       Debug.info("worker thread terminated.");
     }// run方法结束
   }// WorkerThread结束
+  
+	public static void main(String[] args) throws InterruptedException {
+		TerminatableTaskRunner tr = new TerminatableTaskRunner();
+		tr.init();
+
+		tr.submit(new Runnable() {
+			@Override
+			public void run() {
+				Debug.info("before doing task");
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// 什么也不做:这会导致线程中断标记被清除
+					Debug.info("exception in 2");
+				}
+				Debug.info("after doing task");
+			}
+		});
+		//Thread.sleep(1000);
+		tr.workerThread.interrupt();
+	}
 }

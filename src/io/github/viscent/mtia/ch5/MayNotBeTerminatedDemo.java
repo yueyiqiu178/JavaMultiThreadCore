@@ -27,10 +27,12 @@ public class MayNotBeTerminatedDemo {
           Thread.sleep(2000);
         } catch (InterruptedException e) {
           // 什么也不做:这会导致线程中断标记被清除
+          Debug.info("exception in run : " + e.getMessage());
         }
         Debug.info("after doing task");
       }
     });
+    //Thread.sleep(3000);
     tr.workerThread.interrupt();
   }
 }
