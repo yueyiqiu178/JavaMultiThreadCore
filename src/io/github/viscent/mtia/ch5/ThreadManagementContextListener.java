@@ -23,6 +23,25 @@ import javax.servlet.ServletContextListener;
 //@WebListener
 public class ThreadManagementContextListener implements ServletContextListener {
 
+	protected static ThreadManagementContextListener threadManagementContextListener = new ThreadManagementContextListener();
+	
+	public static void main(String... args) throws InterruptedException {
+			
+		new Thread() {
+			@Override
+			public void run() {
+				ThreadManagementContextListener.threadManagementContextListener.contextInitialized(null);
+			}
+		}.start();
+		
+		
+		Thread.sleep(6000);
+		Debug.info("Hello:%s", Thread.currentThread().getName());
+		threadManagementContextListener.contextDestroyed(null);
+		
+	}
+	
+	
   @Override
   public void contextDestroyed(ServletContextEvent ctxEvt) {
     // 停止所有登记的线程
@@ -84,7 +103,7 @@ public class ThreadManagementContextListener implements ServletContextListener {
       } catch (InterruptedException e) {
         // 什么也不做
       }
-      Debug.info("terminated:%s", Thread.currentThread());
+      Debug.info("terminated:%s", Thread.currentThread().getName());
     }
 
     // 子类覆盖该方法来实现监控逻辑
